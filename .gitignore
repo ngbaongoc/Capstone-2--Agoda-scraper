@@ -28,3 +28,6 @@ agoda_reviews.json
 
 # Docker
 docker-compose.override.yml
+
+# Database folder
+pg_data/
