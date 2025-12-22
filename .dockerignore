@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+venv/
+env/
+ENV/
+
+# Data files
+*.json
+!requirement.txt
+data/
+*.csv
+*.xlsx
+
+# Database
+*.db
+*.sqlite3
+pg_data/
+postgres-data/
+
+# Logs
+*.log
+logs/
+airflow/logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+*.pem
+*.key
+
+# Cache
+.cache/
+*.cache
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Playwright
+.playwright/
+
+# Docker
+.dockerignore
