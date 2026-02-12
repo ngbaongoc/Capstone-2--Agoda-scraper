@@ -8,6 +8,15 @@ A comprehensive hotel review analytics dashboard that scrapes Agoda reviews, per
 ![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?logo=postgresql&logoColor=white)
 
+
+
+https://github.com/user-attachments/assets/6baf3eb2-f9e5-466f-90ca-72e1ef6688ef
+
+https://github.com/user-attachments/assets/344383ba-d140-4713-8c7d-4bc2bc0421ea
+
+https://github.com/user-attachments/assets/2d2b22f0-556b-4bf3-b407-86c89b2e053a
+
+
 ## 🌟 Features
 
 - **📊 Real-time Analytics Dashboard** - Interactive Streamlit dashboard with multi-hotel support
