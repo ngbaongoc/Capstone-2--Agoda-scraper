@@ -1,5 +1,6 @@
 # 🏨 Agoda Hotel Reviews Dashboard
 
+
 A comprehensive hotel review analytics dashboard that scrapes Agoda reviews, performs AI sentiment analysis, and provides actionable insights for hotel management.
 
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
@@ -31,12 +32,43 @@ A comprehensive hotel review analytics dashboard that scrapes Agoda reviews, per
                         └──────────────┘
 ```
 
+
+## 📁 Project Structure
+
+```
+Agentic_web_scraping/
+├── app/
+│   └── dashboard.py          # Main Streamlit dashboard
+├── scraper/
+│   ├── main.py              # Agoda scraper
+│   └── utils.py             # Helper functions
+├── database/
+│   ├── init_db.py           # Database initialization
+│   ├── clean_data.py        # Data cleaning
+│   └── update_from_cleaned.py  # Database updater
+├── airflow/
+│   ├── dags/                # DAG definitions
+│   └── logs/                # Airflow logs
+├── data/                    # JSON data storage
+├── Dockerfile               # Docker image definition
+├── docker-compose.yml       # Multi-container setup
+├── requirements.txt         # Python dependencies
+└── README.md               # This file
+```
+
+
+
 ## 🚀 Quick Start
+
+
+
 
 ### Prerequisites
 
-- Docker & Docker Compose
-- Git
+- **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** (Required for containerization)
+- **[Git](https://git-scm.com/downloads)** (Version control)
+- **[AgentQL API Key](https://docs.agentql.com/docs/introduction)** (Required for scraping)
+- **Database Client** (Optional, e.g., [DBeaver](https://dbeaver.io/))
 
 ### Option 1: Using Docker Compose (Recommended)
 
@@ -77,7 +109,7 @@ python3 -m venv venv
 source venv/bin/activate  # On Windows: venv\Scripts\activate
 
 # 2. Install dependencies
-pip install -r requirement.txt
+pip install -r requirements.txt
 
 # 3. Install Playwright browsers
 playwright install chromium
@@ -89,56 +121,60 @@ python3 database/init_db.py
 streamlit run app/dashboard.py
 ```
 
-## 📊 Dashboard Access
+### 🛑 Stop the Application
 
-Once running, access the dashboard at `http://localhost:8501`
-
-### Default Features:
-- ✅ Multi-hotel selection dropdown
-- ✅ Date range filtering
-- ✅ Navigation: Overview, Complaints, Fake Reviews
-- ✅ Real-time metrics and sentiment analysis
-- ✅ Interactive charts and word clouds
-- ✅ Priority-based action center
-- ✅ Full-text review search
-
-## 🗄️ Database Setup
-
-### Initialize Database
-
+To stop all services:
 ```bash
-# Using Docker
-docker exec hotel_dashboard python3 database/init_db.py
+docker-compose down
 
-# Local
-python3 database/init_db.py
+## 💻 System Requirements & Configuration
+
+### 1. 🐳 Docker Installation
+Required to run the application containers.
+- **Windows/Mac**: Download [Docker Desktop](https://www.docker.com/products/docker-desktop/).
+- **Linux**: Install via terminal: `curl -fsSL https://get.docker.com | sh`
+- **Verify**: Run `docker --version` and `docker-compose --version`.
+
+### 2. 🐘 PostgreSQL Connection
+Details to connect external tools (like DBeaver/TablePlus) to the database.
+
+| Parameter | Value | Note |
+|:---|:---|:---|
+| **Host** | `localhost` | |
+| **Port** | `5433` | ⚠️ Docker maps 5432 -> 5433 locally |
+| **Database** | `hotel_insights` | |
+| **Username** | `admin` | |
+| **Password** | `password123` | |
+
+### 3. 🤖 AgentQL Connection
+Required for the AI scraper to function.
+1. Get API Key from [AgentQL Dashboard](https://dev.agentql.com).
+2. Create/Edit `.env` file in the project root.
+3. Add variable: `AGENTQL_API_KEY=your_actual_key_here`
+
+## 🛠️ Data Management
+
+
+### 1. Manual Crawl (Background)
+```bash
+# Example: 5 hotels, 20 reviews each
+python scraper/main.py --max-hotels 5 --reviews 20 --output data/manual_crawl.json
 ```
 
-### Update from Cleaned Data
-
+### 2. Ingest Data
+To load any JSON file into the database:
 ```bash
-# Clean and deduplicate JSON data
-python3 database/clean_data.py
-
-# Update database
-python3 database/update_from_cleaned.py
+# Replace 'your_file.json' with the file name inside 'data/' folder
+docker exec hotel_dashboard python database/init_db.py --file /app/data/option_b_crawl.json
 ```
 
-## 🤖 Automated Scraping with Airflow
 
-### Access Airflow
 
-1. Navigate to `http://localhost:8080`
-2. Login with credentials: **admin / admin**
-3. Enable the `agoda_scraper_dag` DAG
-4. Trigger manually or wait for scheduled runs
 
-### Scraping Configuration
 
-Edit `/airflow/dags/agoda_scraper.py` to configure:
-- Target hotels
-- Scraping schedule
-- Number of reviews to fetch
+
+### Configuration
+Edit `/airflow/dags/agoda_scraper.py` to configure target hotels and schedule.
 
 ## 📦 Data Pipeline
 
@@ -158,49 +194,23 @@ Edit `/airflow/dags/agoda_scraper.py` to configure:
 
 ## 🛠️ Configuration
 
-### Environment Variables
+### Environment Variables (.env)
 
-Create a `.env` file for custom configuration:
-
-```bash
-# Database
-DATABASE_URL=postgresql://admin:password123@postgres:5432/hotel_insights
-DB_HOST=localhost
-DB_NAME=hotel_insights
-DB_USER=admin
-DB_PASS=password123
-DB_PORT=5432
-
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
-
-# Streamlit
-STREAMLIT_SERVER_PORT=8501
-STREAMLIT_SERVER_ADDRESS=0.0.0.0
-```
-
-### Customizing the Dashboard
-
-Edit `app/dashboard.py` to:
-- Modify metrics and visualizations
-- Add custom filters
-- Change color schemes
-- Adjust sentiment analysis thresholds
-
-## 📊 Key Metrics Explained
-
-| Metric | Description |
-|--------|-------------|
-| **Điểm Agoda** | Average rating from Agoda platform |
-| **Sentiment** | AI-calculated emotional score from review text |
-| **Rủi Ro Ẩn** | Reviews with high scores but negative sentiment |
-| **Tiêu Cực** | Percentage of negative reviews |
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | - | Yes |
+| `REDIS_HOST` | Redis host address | localhost | Yes |
+| `REDIS_PORT` | Redis port | 6379 | No |
+| `POSTGRES_USER` | Database username | admin | No |
+| `POSTGRES_PASSWORD` | Database password | password123 | No |
+| `POSTGRES_DB` | Database name | hotel_insights | No |
+| `STREAMLIT_PORT` | Dashboard port | 8501 | No |
+| `AIRFLOW_PORT` | Airflow UI port | 8080 | No |
+| `AGENTQL_API_KEY` | AgentQL API Key | - | **Yes (for Scraper)** |
 
 ## 🔧 Troubleshooting
 
 ### Dashboard shows "Chưa có dữ liệu"
-
 ```bash
 # Check database connection
 docker exec -it hotel_db psql -U admin -d hotel_insights -c "SELECT COUNT(*) FROM reviews;"
@@ -210,83 +220,17 @@ python3 database/update_from_cleaned.py
 ```
 
 ### Redis cache issues
-
 ```bash
 # Clear Redis cache
 docker exec hotel_cache redis-cli FLUSHALL
-
-# Restart dashboard
-docker-compose restart streamlit_app
 ```
 
 ### Airflow not scraping
-
 ```bash
-# Check Airflow logs
+# Check logs
 docker logs airflow_scheduler
-
-# Verify DAG is enabled in UI
-# Navigate to http://localhost:8080
 ```
 
-## 🐳 Docker Hub Deployment
-
-### Build and Push
-
-```bash
-# Build the image
-docker build -t yourusername/hotel-insights-dashboard:latest .
-
-# Tag with version
-docker tag yourusername/hotel-insights-dashboard:latest yourusername/hotel-insights-dashboard:v1.0.0
-
-# Push to Docker Hub
-docker login
-docker push yourusername/hotel-insights-dashboard:latest
-docker push yourusername/hotel-insights-dashboard:v1.0.0
-```
-
-### Pull and Run
-
-```bash
-docker pull yourusername/hotel-insights-dashboard:latest
-docker-compose up -d
-```
-
-## 📁 Project Structure
-
-```
-Agentic_web_scraping/
-├── app/
-│   └── dashboard.py          # Main Streamlit dashboard
-├── scraper/
-│   ├── main.py              # Agoda scraper
-│   └── utils.py             # Helper functions
-├── database/
-│   ├── init_db.py           # Database initialization
-│   ├── clean_data.py        # Data cleaning
-│   └── update_from_cleaned.py  # Database updater
-├── airflow/
-│   ├── dags/                # DAG definitions
-│   └── logs/                # Airflow logs
-├── data/                    # JSON data storage
-├── Dockerfile               # Docker image definition
-├── docker-compose.yml       # Multi-container setup
-├── requirement.txt          # Python dependencies
-└── README.md               # This file
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License.
 
 ## 🙏 Acknowledgments
 
@@ -299,8 +243,8 @@ This project is licensed under the MIT License.
 ## 📞 Support
 
 For issues and questions:
-- 📧 Email: your.email@example.com
-- 🐛 GitHub Issues: [Create an issue](https://github.com/yourusername/Agentic_web_scraping/issues)
+- 📧 Email: ngobaongoc053@gmail.com
+- 🐛 GitHub: https://github.com/ngbaongoc
 
 ---
 
