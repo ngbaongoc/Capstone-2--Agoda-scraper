@@ -14,24 +14,7 @@ A comprehensive hotel review analytics dashboard that scrapes Agoda reviews, per
 
 https://github.com/user-attachments/assets/8149b997-dfc6-4047-b0d8-952e942bf281
 
-
-
-https://github.com/user-attachments/assets/8149b997-dfc6-4047-b0d8-952e942bf281
-
-
-
-
 https://github.com/user-attachments/assets/55743856-1e71-47df-a2fa-c72c927d34be
-
-
-
-https://github.com/user-attachments/assets/55743856-1e71-47df-a2fa-c72c927d34be
-
-
-
-https://github.com/user-attachments/assets/d52bde10-ee49-4f27-a93e-c707c541b05a
-
-
 
 https://github.com/user-attachments/assets/d52bde10-ee49-4f27-a93e-c707c541b05a
 
